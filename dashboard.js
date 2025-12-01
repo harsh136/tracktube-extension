@@ -11,8 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const navDashboard = document.getElementById('nav-dashboard');
     const navCourses = document.getElementById('nav-courses');
     const navNotes = document.getElementById('nav-notes');
+    const navSettings = document.getElementById('nav-settings');
     const pageTitle = document.querySelector('header h1');
     const filtersSection = document.querySelector('.filters');
+    const settingsSection = document.getElementById('settings-section');
+    const contentSection = document.querySelector('.content-section');
 
     let allData = [];
     let currentView = 'dashboard'; // dashboard, courses, notes
@@ -44,14 +47,20 @@ document.addEventListener('DOMContentLoaded', () => {
         switchView('notes');
     });
 
+    navSettings.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchView('settings');
+    });
+
     function switchView(view) {
         currentView = view;
 
         // Update Nav UI
-        [navDashboard, navCourses, navNotes].forEach(el => el.classList.remove('active'));
+        [navDashboard, navCourses, navNotes, navSettings].forEach(el => el.classList.remove('active'));
         if (view === 'dashboard') navDashboard.classList.add('active');
         if (view === 'courses') navCourses.classList.add('active');
         if (view === 'notes') navNotes.classList.add('active');
+        if (view === 'settings') navSettings.classList.add('active');
 
         renderCurrentView();
     }
@@ -59,18 +68,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderCurrentView() {
         videoList.innerHTML = ''; // Clear current content
 
+        // Reset visibility defaults
+        contentSection.style.display = 'none';
+        settingsSection.style.display = 'none';
+        filtersSection.style.display = 'none';
+
         if (currentView === 'dashboard') {
             pageTitle.textContent = 'My Learning Dashboard';
             filtersSection.style.display = 'flex';
+            contentSection.style.display = 'block'; // Show video list
             filterData(); // This calls renderVideos
         } else if (currentView === 'courses') {
             pageTitle.textContent = 'My Courses (Playlists)';
-            filtersSection.style.display = 'none';
+            contentSection.style.display = 'block'; // Show video list
             renderCourses();
         } else if (currentView === 'notes') {
             pageTitle.textContent = 'All Notes';
-            filtersSection.style.display = 'none';
+            contentSection.style.display = 'block'; // Show video list
             renderNotes();
+        } else if (currentView === 'settings') {
+            pageTitle.textContent = 'Settings';
+            settingsSection.style.display = 'block'; // Show settings
+            checkStorageUsage();
         }
     }
 
@@ -323,4 +342,110 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', filterData);
     filterTopic.addEventListener('change', filterData);
     filterStatus.addEventListener('change', filterData);
+
+    // --- Data Management Logic ---
+
+    const exportBtn = document.getElementById('exportBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+    const storageFill = document.getElementById('storageFill');
+    const storageText = document.getElementById('storageText');
+    const storageWarning = document.getElementById('storageWarning');
+
+    // 1. Export Data
+    if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+            chrome.storage.sync.get(['learningData'], (result) => {
+                const data = result.learningData || [];
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+
+                // Create a temporary anchor tag to trigger download
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                const date = new Date().toISOString().slice(0, 10);
+                downloadAnchorNode.setAttribute("download", `tracktube-backup-${date}.json`);
+                document.body.appendChild(downloadAnchorNode); // Required for firefox
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            });
+        });
+    }
+
+    // 2. Import Data
+    if (importBtn) {
+        importBtn.addEventListener('click', () => {
+            const file = importFile.files[0];
+            if (!file) {
+                alert("Please select a JSON file first.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+
+                    if (!Array.isArray(importedData)) {
+                        throw new Error("Invalid format: Data must be an array.");
+                    }
+
+                    // Merge Logic: We combine existing data with imported data
+                    // Preference given to imported data if IDs match (updating progress)
+                    chrome.storage.sync.get(['learningData'], (result) => {
+                        const currentData = result.learningData || [];
+
+                        // Create a map of current data for easy lookup
+                        const dataMap = new Map(currentData.map(item => [item.id, item]));
+
+                        // Update or Add imported items
+                        importedData.forEach(item => {
+                            // Basic validation to check if it's a valid tracktube item
+                            if (item.id && item.title) {
+                                dataMap.set(item.id, item);
+                            }
+                        });
+
+                        const mergedData = Array.from(dataMap.values());
+
+                        // Save back to storage
+                        chrome.storage.sync.set({ learningData: mergedData }, () => {
+                            alert(`Successfully imported ${importedData.length} items!`);
+                            allData = mergedData; // Update local state
+                            loadData(); // Refresh UI
+                            checkStorageUsage(); // Update storage bar
+                        });
+                    });
+
+                } catch (error) {
+                    alert("Error importing file: " + error.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    // 3. Check Storage Usage
+    function checkStorageUsage() {
+        if (chrome.storage.sync.getBytesInUse) {
+            chrome.storage.sync.getBytesInUse(null, (bytesInUse) => {
+                // chrome.storage.sync.QUOTA_BYTES is usually 102,400 (100KB)
+                const quota = chrome.storage.sync.QUOTA_BYTES || 102400;
+                const percentage = Math.round((bytesInUse / quota) * 100);
+
+                if (storageFill) {
+                    storageFill.style.width = `${percentage}%`;
+                    storageText.textContent = `${percentage}% (${bytesInUse} bytes / ${quota} bytes)`;
+
+                    // Color coding
+                    if (percentage > 80) {
+                        storageFill.style.backgroundColor = 'var(--accent-danger)';
+                        storageWarning.style.display = 'flex';
+                    } else {
+                        storageFill.style.backgroundColor = 'var(--accent-primary)';
+                        storageWarning.style.display = 'none';
+                    }
+                }
+            });
+        }
+    }
 });

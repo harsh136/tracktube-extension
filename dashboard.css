@@ -581,3 +581,98 @@ h1 {
 ::-webkit-scrollbar-thumb:hover {
     background: #444;
 }
+
+/* Settings Page Styles */
+.settings-card {
+    background: var(--bg-card);
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+}
+
+.settings-card h2 {
+    margin-top: 0;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.settings-desc {
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-size: 14px;
+}
+
+.settings-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.action-group {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+}
+
+.action-group h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.action-group p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin: 0 0 16px 0;
+}
+
+.file-input-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+input[type="file"] {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.warning-text {
+    color: var(--accent-danger);
+    font-size: 13px;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Reusing buttons but adding specific margins if needed */
+.primary-btn {
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.primary-btn:hover {
+    background-color: var(--accent-hover);
+}
+
+.secondary-btn {
+    background-color: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+.secondary-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}

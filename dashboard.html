@@ -21,6 +21,7 @@
             <a href="#" class="active" id="nav-dashboard">Dashboard</a>
             <a href="#" id="nav-courses">My Courses</a>
             <a href="#" id="nav-notes">All Notes</a>
+            <a href="#" id="nav-settings">Settings</a>
         </nav>
     </div>
 
@@ -58,6 +59,44 @@
 
             <div id="videoList" class="video-grid">
                 <!-- Video cards will be injected here -->
+            </div>
+        </section>
+
+        <section id="settings-section" class="content-section" style="display: none;">
+            <div class="card settings-card">
+                <h2>Data Management</h2>
+                <p class="settings-desc">Manage your learning data. Export to backup or import from another device.</p>
+
+                <div class="settings-actions">
+                    <div class="action-group">
+                        <h3>Export Data</h3>
+                        <p>Download your progress and notes as a JSON file.</p>
+                        <button id="exportBtn" class="primary-btn">Download Backup</button>
+                    </div>
+
+                    <div class="action-group">
+                        <h3>Import Data</h3>
+                        <p>Restore data from a backup file. This will merge with existing data.</p>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="importFile" accept=".json">
+                            <button id="importBtn" class="secondary-btn">Import Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="storage-info">
+                    <h3>Storage Usage</h3>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar">
+                            <div id="storageFill" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span id="storageText" class="progress-text">0%</span>
+                    </div>
+                    <p id="storageWarning" class="warning-text" style="display: none;">
+                        ⚠️ You are running low on sync storage space. Consider exporting data or switching to local
+                        storage.
+                    </p>
+                </div>
             </div>
         </section>
     </div>
