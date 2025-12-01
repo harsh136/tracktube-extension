@@ -18,21 +18,17 @@ function handleAutoSave(entry) {
     chrome.storage.sync.get(['learningData'], (result) => {
         let data = result.learningData || [];
 
-        // Check if video already exists
         const existingIndex = data.findIndex(item => item.id === entry.videoId);
 
         if (existingIndex > -1) {
-            // Update existing
             const existing = data[existingIndex];
 
             existing.timestamp = entry.currentTime;
             existing.lastWatched = Date.now();
 
-            // Update status logic
             if (entry.status === 'Completed') {
                 existing.status = 'Completed';
             } else if (existing.status !== 'Completed') {
-                // Only set to Ongoing if it wasn't already Completed
                 existing.status = 'Ongoing';
             }
 
@@ -42,13 +38,7 @@ function handleAutoSave(entry) {
 
             data[existingIndex] = existing;
         } else {
-            // Add new
-            // We need to construct a full entry object similar to popup.js
-            // Some fields might be missing (like topic or notes), set defaults.
-
-            // Determine Playlist ID logic (simplified from popup.js)
             let playlistId = entry.playlistId;
-            // We don't have the user input for playlist URL/Name here, so rely on what we caught.
 
             const newEntry = {
                 id: entry.videoId,
@@ -56,7 +46,7 @@ function handleAutoSave(entry) {
                 url: entry.url,
                 timestamp: entry.currentTime,
                 duration: entry.duration,
-                topic: '', // Default empty
+                topic: '',
                 status: entry.status || 'Ongoing',
                 lastWatched: Date.now(),
                 notes: [],

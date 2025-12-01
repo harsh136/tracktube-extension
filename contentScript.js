@@ -15,7 +15,6 @@ let saveTimeout = null;
 
 if (video) {
   video.addEventListener('pause', () => {
-    // Debounce: Wait 5 seconds of inactivity (paused state) before saving
     if (!video.seeking && video.currentTime > 0 && !video.ended) {
       clearTimeout(saveTimeout);
       saveTimeout = setTimeout(() => {
@@ -25,7 +24,6 @@ if (video) {
   });
 
   video.addEventListener('play', () => {
-    // If user resumes watching within 5 seconds, cancel the pending save
     if (saveTimeout) {
       clearTimeout(saveTimeout);
       saveTimeout = null;
@@ -33,7 +31,6 @@ if (video) {
   });
 
   video.addEventListener('ended', () => {
-    // Save immediately on end
     if (saveTimeout) clearTimeout(saveTimeout);
     handleAutoSave('Completed');
   });
@@ -41,7 +38,6 @@ if (video) {
 
 function handleAutoSave(status) {
   const details = extractVideoDetails();
-  // Override status for the auto-save event
   details.status = status;
 
   chrome.runtime.sendMessage({
@@ -51,14 +47,6 @@ function handleAutoSave(status) {
 }
 
 function getChapterTitle() {
-  // Try to find the active chapter in the description or chapter list
-  // This is tricky as YouTube changes classes. 
-  // Method 1: Look for the active chapter in the macro markers (timeline) - hard to get text.
-  // Method 2: Look for the active chapter in the description chapters list if open? No.
-  // Method 3: Look for the chapter title element that appears above the progress bar on hover?
-  // Method 4: The most reliable for "current chapter" text is often in the structured data or the chapter view.
-
-  // Let's try to find the chapter element in the player UI
   const chapterElement = document.querySelector('.ytp-chapter-title-content');
   if (chapterElement) {
     return chapterElement.innerText;
@@ -75,8 +63,6 @@ function extractVideoDetails() {
   const videoId = urlParams.get('v');
   const playlistId = urlParams.get('list');
 
-  // Get playlist title if available
-  // Try multiple selectors for the playlist title in the side panel
   const playlistHeader = document.querySelector('ytd-playlist-panel-renderer #header-description h3') ||
     document.querySelector('ytd-playlist-panel-renderer .title') ||
     document.querySelector('.ytd-playlist-panel-renderer .header-title');

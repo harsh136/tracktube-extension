@@ -648,7 +648,6 @@ input[type="file"] {
     gap: 8px;
 }
 
-/* Reusing buttons but adding specific margins if needed */
 .primary-btn {
     background-color: var(--accent-primary);
     color: white;
