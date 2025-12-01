@@ -521,12 +521,12 @@ h1 {
     background-color: var(--accent-hover);
 }
 
-.resume.icon-btn {
-    background: transparent;
-    border: none;
+.icon-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
     cursor: pointer;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--text-secondary);
     transition: all var(--transition-fast);
     display: flex;
@@ -536,20 +536,23 @@ h1 {
 }
 
 .icon-btn svg {
-    width: 20px;
-    height: 20px;
-    stroke-width: 1.5px;
+    width: 18px;
+    height: 18px;
+    stroke-width: 2px;
     transition: stroke var(--transition-fast);
 }
 
 .icon-btn:hover {
     background-color: rgba(255, 255, 255, 0.08);
     color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
 }
 
 .delete-btn:hover {
     color: var(--accent-danger);
     background-color: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
 }
 
 .toggle-status-btn:hover {
