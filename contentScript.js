@@ -11,16 +11,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Auto-Save Logic
 const video = document.querySelector('video');
+let saveTimeout = null;
+
 if (video) {
   video.addEventListener('pause', () => {
-    // Debounce or check if it's a real pause vs seeking?
-    // For now, simple pause is fine.
+    // Debounce: Wait 5 seconds of inactivity (paused state) before saving
     if (!video.seeking && video.currentTime > 0 && !video.ended) {
-      handleAutoSave('Ongoing');
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        handleAutoSave('Ongoing');
+      }, 5000);
+    }
+  });
+
+  video.addEventListener('play', () => {
+    // If user resumes watching within 5 seconds, cancel the pending save
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+      saveTimeout = null;
     }
   });
 
   video.addEventListener('ended', () => {
+    // Save immediately on end
+    if (saveTimeout) clearTimeout(saveTimeout);
     handleAutoSave('Completed');
   });
 }
