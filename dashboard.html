@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackTube Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <img src="icons/icon.svg" alt="Logo">
+            <h2>TrackTube</h2>
+        </div>
+        <nav>
+            <a href="#" class="active" id="nav-dashboard">Dashboard</a>
+            <a href="#" id="nav-courses">My Courses</a>
+            <a href="#" id="nav-notes">All Notes</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>My Learning Dashboard</h1>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3 id="totalVideos">0</h3>
+                    <p>Videos Tracked</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="completedVideos">0</h3>
+                    <p>Completed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="ongoingVideos">0</h3>
+                    <p>In Progress</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="content-section">
+            <div class="filters">
+                <input type="text" id="search" placeholder="Search videos...">
+                <select id="filterTopic">
+                    <option value="All">All Topics</option>
+                </select>
+                <select id="filterStatus">
+                    <option value="All">All Status</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+            <div id="videoList" class="video-grid">
+                <!-- Video cards will be injected here -->
+            </div>
+        </section>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

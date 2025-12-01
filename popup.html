@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrackTube</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>TrackTube</h1>
+      <button id="dashboardBtn" class="secondary-btn">Dashboard</button>
+    </header>
+
+    <div id="video-info" class="card">
+      <h2 id="videoTitle">Loading...</h2>
+      <p id="timestampDisplay">00:00:00</p>
+    </div>
+
+    <div class="form-group">
+      <label for="topic">Topic / Label</label>
+      <input type="text" id="topic" placeholder="e.g., DBMS, React Hooks">
+    </div>
+
+    <!-- Playlist Section -->
+    <div class="form-group">
+      <label for="playlistName">Playlist (Optional)</label>
+      <div style="display: flex; gap: 5px;">
+        <input type="text" id="playlistName" placeholder="Detected or Enter Name">
+        <button id="togglePlaylistUrl" class="secondary-btn" title="Add Link"
+          style="width: auto; padding: 0 8px;">🔗</button>
+      </div>
+      <input type="text" id="playlistUrl" placeholder="Playlist URL (if not detected)"
+        style="display: none; margin-top: 5px;">
+    </div>
+
+    <div class="form-group">
+      <label for="note">Quick Note (Optional)</label>
+      <textarea id="note" placeholder="Add a note for this timestamp..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Status</label>
+      <div class="status-options">
+        <button class="status-btn" data-status="Ongoing">Ongoing</button>
+        <button class="status-btn" data-status="Completed">Completed</button>
+      </div>
+    </div>
+
+    <button id="saveBtn" class="primary-btn">Save Progress</button>
+    <div id="message"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+
+</html>
